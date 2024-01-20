@@ -1,11 +1,8 @@
-require('dotenv').config();
-
 const cors = require('cors');
 const express = require('express');
 
-const errorHandler = require('./src/app/Middlewares/ErrorHandler');
-
-const router = require('./src/routes');
+const errorHandler = require('./app/Middlewares/ErrorHandler');
+const router = require('./routes/index');
 
 const app = express();
 
@@ -20,8 +17,3 @@ app.use(errorHandler);
 
 
 module.exports = app;
-const PORT = process.env.PORT || 8000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on PORT : ${PORT}`);
-});
