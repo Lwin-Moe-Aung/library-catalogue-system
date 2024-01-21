@@ -41,3 +41,8 @@ To run this application locally, follow these steps:
     ```bash
     For production: npm start
 
+
+ **Postman collection:**
+    ```bash
+    Link: https://api.postman.com/collections/4680069-ceb45641-883d-4f9d-8732-578cf674da31?access_key=PMAT-01HMNTXPRMCG95KDGSXXRJK21B
+
