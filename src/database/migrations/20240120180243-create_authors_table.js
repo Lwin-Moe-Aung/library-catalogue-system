@@ -37,6 +37,7 @@ module.exports = {
       email: {
         type: Sequelize.STRING(255),
         unique: true,
+        allowNull: false,
       },
       website: {
         type: Sequelize.STRING(255),
@@ -52,6 +53,10 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
+      deleted_at: {
+        allowNull: true,
+        type: Sequelize.DATE,
+      }
     });
   },
 

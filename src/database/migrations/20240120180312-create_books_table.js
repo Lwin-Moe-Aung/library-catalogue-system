@@ -6,7 +6,7 @@ const { DataBaseTableNames } = require('../const');
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(DataBaseTableNames.BOOK, {
-      book_id: {
+      id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,

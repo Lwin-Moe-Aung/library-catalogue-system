@@ -1,111 +1,99 @@
 const bcrypt = require( "bcryptjs");
 const jwt = require( "jsonwebtoken");
-// const db =  require("../../database/models");
-// const Admin = db.admins;
 
-// const register = async (req, res) => {
-//     console.log(req.body);
-//     const username = req.body.username;
-//     const email = req.body.email;
-//     const password = req.body.password;
+require('dotenv').config();
 
-//     const user = await User.findOne({ where: { email: email } });
-//     if(user != null) return res.status(409).json("Email already exists!");
+const { DataBaseModelNames } = require('../../database/const');
+const Admin = require('../Models')[DataBaseModelNames.ADMIN];
 
-//     //Hash the password and create a user
-//     const salt = await bcrypt.genSaltSync(10);
-//     var usr = {
-//         username : username,
-//         email : email,
-//         password : await bcrypt.hashSync(password, salt),
-//         is_admin : false
-//     };
-//     const created_user = await User.create(usr);
-//     res.status(201).json(created_user);
-//     // console.log(user);
-// }
-
-const login = (req, res) => {
+const logIn = (req, res) => {
     console.log(req.body);
-    return;
-    //validation
-    //do something
+    // return;
     Admin.findOne({ where: { email: req.body.email } })
-    .then( admin => {
-        if(admin == null)  return res.status(404).json("Admin not found!");
+        .then( admin => {
+            if(admin == null)  return res.status(404).json({
+                "isSuccess": false,
+                "message": "Admin not found"
+            });
 
-        const isPasswordCorrect = bcrypt.compareSync( req.body.password , admin.password);
+            const isPasswordCorrect = bcrypt.compareSync( req.body.password , admin.password);
 
-        if (!isPasswordCorrect) return res.status(400).json("Wrong password!");
+            if (!isPasswordCorrect) return res.status(400).json({
+                "isSuccess": false,
+                "message": "Wrong password"
+            });
 
-        // correct password
-        const accessToken = jwt.sign(
-            { 
-                "UserInfo": {
-                    "id": admin.id,
-                    "name": admin.name,
-                    "email": admin.email,
-                    "role": admin.role
-                }
-            }, 
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '10s' }
-        );
-       
-        const refreshToken = jwt.sign(
-            { "email": admin.email },
-            process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: '1d'}
-        );
+            // correct password
+            const accessToken = jwt.sign(
+                { 
+                    "UserInfo": {
+                        "id": admin.id,
+                        "name": admin.name,
+                        "email": admin.email,
+                        "role": admin.role
+                    }
+                }, 
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: '1h' }
+            );
         
-        admin.update({
-            refresh_token: refreshToken
-        }).then( data =>{
-            console.log("refresh token updated" + data)
+            const refreshToken = jwt.sign(
+                { "email": admin.email },
+                process.env.REFRESH_TOKEN_SECRET,
+                { expiresIn: '1d'}
+            );
+            
+            admin.update({
+                refreshToken: refreshToken
+            }).then( data =>{
+                console.log("refresh token updated" + data)
+            }).catch(error =>{
+                console.log(error);
+            });
+            //for web
+            //Creates Secure Cookie with refresh token
+            res
+                .cookie('jwt', refreshToken, { 
+                    httpOnly: true, 
+                    secure: true, 
+                    sameSite: 'None', 
+                    maxAge: 24 * 60 * 60 * 1000
+            });
+            const { password, ...data } = admin.dataValues;
+        
+            return res.status(200)
+                .json({data, accessToken});
+        })
+        .catch( error => {
+            return res.status(500).json(error);
+        });
+}
+
+const logOut = async (req, res) => {
+    // on client, also delete the accessToken
+    // const cookies = req.cookies;
+    const refreshToken = req.body.refresh_token;
+    //Is refreshToken in db?
+    Admin.findOne({ where: { refreshToken: refreshToken } })
+    .then(admin => {
+        if(admin == null ) res.status(404).json("Admin not found!");
+        Admin.update({
+            refreshToken: null
         }).catch(error =>{
             console.log(error);
         });
-        
-        //Creates Secure Cookie with refresh token
-        res
-            .cookie('jwt', refreshToken, { 
-                httpOnly: true, 
-                secure: true, 
-                sameSite: 'None', 
-                maxAge: 24 * 60 * 60 * 1000
-        });
-        const { password, refresh_token, ...data } = admin.dataValues;
-      
-        return res.status(200)
-            .json({data, accessToken});
     })
     .catch( error => {
-        return res.status(500).json(error);
+        console.log(error);
     });
-
+    //for web
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+    
+    res.status(400).json({
+        "isSuccess": true,
+        "message": "Logout Successfully"
+    });
+    
 }
 
-// const logout = async (req, res) => {
-//     // on client, also delete the accessToken
-//     const cookies = req.cookies;
-//     if(!cookies?.jwt) return res.sendStatus(204);// No content
-//     const refreshToken = cookies.jwt;
-
-//     //Is refreshToken in db?
-//     User.findOne({ where: { refresh_token: refreshToken } })
-//     .then(user => {
-//         if(user == null ) res.status(404).json("User not found!");
-//         user.update({
-//             refresh_token: null
-//         }).catch(error =>{
-//             console.log(error);
-//         });
-//     })
-//     .catch( error => {
-//         console.log(error);
-//     });
-//     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
-//     res.sendStatus(204);
-// }
-
-module.exports = { login }
+module.exports = { logIn, logOut }

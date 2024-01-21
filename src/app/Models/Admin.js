@@ -4,7 +4,7 @@ const { Model } = require('sequelize');
 const { DataBaseModelNames } = require('../../database/const');
 module.exports = (sequelize, DataTypes) => {
     class Admin extends Model {
-      static associate() {
+      static associate(models) {
         Admin.hasMany(models[DataBaseModelNames.BORROW_RECORD], {
           foreignKey: {
               name: 'adminId',

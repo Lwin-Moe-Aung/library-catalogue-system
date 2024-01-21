@@ -27,6 +27,7 @@ module.exports = {
       },
       date_of_birth: {
         type: Sequelize.DATEONLY,
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
@@ -49,6 +50,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
         allowNull: false,
+      },
+      deleted_at: {
+        allowNull: true,
+        type: Sequelize.DATE,
       },
     });
   },

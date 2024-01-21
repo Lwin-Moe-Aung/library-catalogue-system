@@ -41,6 +41,10 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
         allowNull: false,
       },
+      deleted_at: {
+        allowNull: true,
+        type: Sequelize.DATE,
+      }
     });
   },
 

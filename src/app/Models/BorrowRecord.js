@@ -5,7 +5,7 @@ const { DataBaseModelNames } = require('../../database/const');
 
 module.exports = (sequelize, DataTypes) => {
     class BorrowRecord extends Model {
-        static associate(_models) {
+        static associate(models) {
             BorrowRecord.belongsTo(models[DataBaseModelNames.BOOK], {
                 foreignKey: {
                     name: 'bookId',
