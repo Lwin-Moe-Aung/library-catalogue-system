@@ -1,6 +1,5 @@
 
 const { Op } = require('sequelize');
-
 const { DataBaseModelNames } = require('../../database/const');
 const Book = require('../Models')[DataBaseModelNames.BOOK];
 const BorrowRecord = require('../Models')[DataBaseModelNames.BORROW_RECORD];
