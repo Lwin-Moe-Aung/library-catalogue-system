@@ -7,6 +7,7 @@ module.exports = {
       {
         title: 'The Great Gatsby',
         isbn: '978-0-7432-7356-5',
+        catalog_id: 'ABC123',
         publish_date: new Date('1925-04-10'),
         total_copies: 10,
         available_copies: 10,
@@ -26,6 +27,7 @@ module.exports = {
       {
         title: 'To Kill a Mockingbird',
         isbn: '978-0-06-112008-4',
+        catalog_id: 'XYZ456',
         publish_date: new Date('1960-07-11'),
         total_copies: 8,
         available_copies: 8,

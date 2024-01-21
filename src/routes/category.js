@@ -3,7 +3,6 @@ const { checkSchema } = require('express-validator');
 
 
 const { getLists, getById, create, update, destroy} = require('../app/Controllers/CategoryController.js');
-const validationMiddleware = require('../app/Middlewares/Validation.js');
 const verifyJWT = require('../app/Middlewares/VerifyJWT.js');
 const verifyIsAdmin = require('../app/Middlewares/VerifyIsAdmin.js');
 const {tryCatch} = require('../app/Helpers/TryCatch');

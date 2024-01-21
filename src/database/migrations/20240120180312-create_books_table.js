@@ -20,6 +20,11 @@ module.exports = {
         type: Sequelize.STRING(20),
         unique: true,
       },
+      catalog_id: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.STRING, // Adjust the data type based on your needs
+      },
       publish_date: {
         type: Sequelize.DATE,
       },

@@ -47,6 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             title: DataTypes.STRING,
             isbn: DataTypes.STRING,
+            catalogId: DataTypes.STRING,
             publishDate: DataTypes.DATE,
             totalCopies: DataTypes.INTEGER,
             availableCopies: DataTypes.INTEGER,
